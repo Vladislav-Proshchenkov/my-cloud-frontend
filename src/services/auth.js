@@ -9,9 +9,6 @@ export const authAPI = {
   
   logout: () => 
     api.post('/users/logout/'),
-  
-  getCurrentUser: () => 
-    api.get('/users/me/'),
 };
 
 export const storageAPI = {

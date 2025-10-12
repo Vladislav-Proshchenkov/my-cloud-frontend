@@ -15,9 +15,16 @@ const Navigation = () => {
   return (
     <nav className={styles.nav}>
       <div className={styles.navContainer}>
-        <Link to="/" className={styles.logo}>
-          My Cloud
-        </Link>
+        <div className={styles.logoContainer}>
+          <img 
+            src="/logo.png" 
+            alt="My Cloud Logo" 
+            className={styles.logoIcon}
+          />
+          <Link to="/" className={styles.logo}>
+            My Cloud
+          </Link>
+        </div>
         
         <div className={styles.navLinks}>
           {isAuthenticated ? (

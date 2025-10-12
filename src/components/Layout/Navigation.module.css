@@ -10,6 +10,17 @@
   margin: 0 auto;
 }
 
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logoIcon {
+  width: 32px;
+  height: 32px;
+}
+
 .logo {
   text-decoration: none;
   font-size: 1.5rem;
@@ -50,6 +61,6 @@
 }
 
 .userInfo {
-  color: #666;
+  color: #ffffff;
   font-weight: 500;
 }

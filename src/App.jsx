@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import Layout from './components/Layout/Layout';
 import Home from './pages/Home';
+import Login from './pages/login';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<div>Страница входа (Сделать)</div>} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<div>Страница регистрации (Сделать)</div>} />
             <Route path="/storage" element={<div>Мои файлы (Сделать)</div>} />
             <Route path="/admin" element={<div>Админка (Сделать)</div>} />
