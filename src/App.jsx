@@ -5,6 +5,7 @@ import store from './store';
 import Layout from './components/Layout/Layout';
 import Home from './pages/Home';
 import Login from './pages/login';
+import Register from './pages/Register';
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<div>Страница регистрации (Сделать)</div>} />
+            <Route path="/register" element={<Register />} />
             <Route path="/storage" element={<div>Мои файлы (Сделать)</div>} />
             <Route path="/admin" element={<div>Админка (Сделать)</div>} />
           </Routes>
