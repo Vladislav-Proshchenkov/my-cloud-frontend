@@ -1,0 +1,172 @@
+.storageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.uploadSection {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.uploadSection h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.uploadForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.fileInput {
+  padding: 0.75rem;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.fileInput:hover {
+  border-color: #2c3e50;
+}
+
+.commentInput {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.uploadButton {
+  padding: 0.75rem 2rem;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-self: flex-start;
+}
+
+.uploadButton:hover:not(:disabled) {
+  background-color: #1a252f;
+}
+
+.uploadButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.filesSection {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.filesSection h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.loading, .empty {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+.filesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fileItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  transition: box-shadow 0.2s;
+}
+
+.fileItem:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.fileInfo {
+  flex: 1;
+}
+
+.fileName {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.fileDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.fileActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.downloadButton, .linkButton, .deleteButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.downloadButton {
+  background-color: #28a745;
+  color: white;
+}
+
+.downloadButton:hover {
+  background-color: #218838;
+}
+
+.linkButton {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.linkButton:hover {
+  background-color: #138496;
+}
+
+.deleteButton {
+  background-color: #dc3545;
+  color: white;
+}
+
+.deleteButton:hover {
+  background-color: #c82333;
+}
