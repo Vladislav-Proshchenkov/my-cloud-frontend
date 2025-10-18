@@ -13,11 +13,15 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+  
     const result = await dispatch(loginUser({ username, password }));
     
     if (result.type === 'auth/login/fulfilled') {
-      navigate('/storage');
+      if (result.payload.user?.is_admin) {
+        navigate('/admin');
+      } else {
+        navigate('/storage');
+      }
     }
   };
 

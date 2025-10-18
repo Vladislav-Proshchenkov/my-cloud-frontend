@@ -34,4 +34,13 @@ export const storageAPI = {
   
   generateLink: (fileId) => 
     api.post(`/storage/files/${fileId}/generate_link/`),
+
+  getUserFiles: (userId) => 
+    api.get(`/storage/files/?user_id=${userId}`),
+};
+
+export const usersAPI = {
+  getUsers: () => api.get('/users/'),
+  deleteUser: (userId) => api.delete(`/users/${userId}/`),
+  toggleAdmin: (userId) => api.post(`/users/${userId}/toggle-admin/`),
 };
