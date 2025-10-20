@@ -37,6 +37,9 @@ export const storageAPI = {
 
   getUserFiles: (userId) => 
     api.get(`/storage/files/?user_id=${userId}`),
+
+  updateFileInfo: (fileId, data) => 
+    api.patch(`/storage/files/${fileId}/update_info/`, data),
 };
 
 export const usersAPI = {

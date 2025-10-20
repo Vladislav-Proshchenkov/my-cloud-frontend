@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { storageAPI } from '../../services/auth';
+import EditFileModal from '../EditFileModal/EditFileModal';
 import styles from './UserFiles.module.css';
 
 const UserFiles = ({ user, onClose }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [editingFile, setEditingFile] = useState(null);
 
   useEffect(() => {
     loadUserFiles();
@@ -13,7 +15,7 @@ const UserFiles = ({ user, onClose }) => {
   const loadUserFiles = async () => {
     setLoading(true);
     try {
-      const response = await storageAPI.getUserFiles(user.id);
+      const response = await storageAPI.getFiles(`?user_id=${user.id}`);
       setFiles(response.data);
     } catch (error) {
       console.error('Ошибка загрузки файлов:', error);
@@ -52,6 +54,22 @@ const UserFiles = ({ user, onClose }) => {
     } catch (error) {
       console.error('Ошибка удаления:', error);
       alert('Ошибка удаления файла');
+    }
+  };
+
+  const handleEdit = (file) => {
+    setEditingFile(file);
+  };
+
+  const handleSaveEdit = async (updatedData) => {
+    try {
+      await storageAPI.updateFileInfo(editingFile.id, updatedData);
+      await loadUserFiles();
+      alert('Файл успешно обновлен!');
+    } catch (error) {
+      console.error('Ошибка обновления файла:', error);
+      alert('Ошибка обновления файла');
+      throw error;
     }
   };
 
@@ -108,6 +126,12 @@ const UserFiles = ({ user, onClose }) => {
                   Скачать
                 </button>
                 <button
+                  onClick={() => handleEdit(file)}
+                  className={styles.editButton}
+                >
+                  Редактировать
+                </button>
+                <button
                   onClick={() => handleDelete(file.id, file.original_name)}
                   className={styles.deleteButton}
                 >
@@ -117,6 +141,14 @@ const UserFiles = ({ user, onClose }) => {
             </div>
           ))}
         </div>
+      )}
+
+      {editingFile && (
+        <EditFileModal
+          file={editingFile}
+          onSave={handleSaveEdit}
+          onClose={() => setEditingFile(null)}
+        />
       )}
     </div>
   );

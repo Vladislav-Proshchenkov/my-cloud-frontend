@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { storageAPI } from '../services/auth';
+import EditFileModal from '../components/EditFileModal/EditFileModal';
 import styles from './Storage.module.css';
 
 const Storage = () => {
@@ -9,6 +10,7 @@ const Storage = () => {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [comment, setComment] = useState('');
+  const [editingFile, setEditingFile] = useState(null);
   const { user } = useSelector(state => state.auth);
 
   useEffect(() => {
@@ -101,6 +103,22 @@ const Storage = () => {
     }
   };
 
+  const handleEdit = (file) => {
+    setEditingFile(file);
+  };
+
+  const handleSaveEdit = async (updatedData) => {
+    try {
+      await storageAPI.updateFileInfo(editingFile.id, updatedData);
+      await loadFiles();
+      alert('Файл успешно обновлен!');
+    } catch (error) {
+      console.error('Ошибка обновления файла:', error);
+      alert('Ошибка обновления файла');
+      throw error;
+    }
+  };
+
   const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -117,7 +135,6 @@ const Storage = () => {
     <div className={styles.storageContainer}>
       <h1 className={styles.title}>Мое файловое хранилище</h1>
       
-      {}
       <div className={styles.uploadSection}>
         <h2>Загрузить новый файл</h2>
         <form onSubmit={handleUpload} className={styles.uploadForm}>
@@ -150,7 +167,6 @@ const Storage = () => {
         </form>
       </div>
 
-      {}
       <div className={styles.filesSection}>
         <h2>Мои файлы ({files.length})</h2>
         
@@ -183,10 +199,16 @@ const Storage = () => {
                     Скачать
                   </button>
                   <button
+                    onClick={() => handleEdit(file)}
+                    className={styles.editButton}
+                  >
+                    Редактировать
+                  </button>
+                  <button
                     onClick={() => handleGenerateLink(file.id)}
                     className={styles.linkButton}
                   >
-                    Получить ссылку
+                    Ссылка
                   </button>
                   <button
                     onClick={() => handleDelete(file.id, file.original_name)}
@@ -200,6 +222,14 @@ const Storage = () => {
           </div>
         )}
       </div>
+
+      {editingFile && (
+        <EditFileModal
+          file={editingFile}
+          onSave={handleSaveEdit}
+          onClose={() => setEditingFile(null)}
+        />
+      )}
     </div>
   );
 };
