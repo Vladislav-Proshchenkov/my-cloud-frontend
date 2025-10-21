@@ -46,4 +46,5 @@ export const usersAPI = {
   getUsers: () => api.get('/users/'),
   deleteUser: (userId) => api.delete(`/users/${userId}/`),
   toggleAdmin: (userId) => api.post(`/users/${userId}/toggle-admin/`),
+  getStats: () => api.get('/users/stats/'),
 };

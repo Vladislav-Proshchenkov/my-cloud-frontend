@@ -1,0 +1,86 @@
+.statsContainer {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.title {
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #2c3e50;
+}
+
+.statIcon {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.statInfo {
+  flex: 1;
+}
+
+.statNumber {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.statLabel {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.detailedStats {
+  margin-top: 2rem;
+}
+
+.detailedStats h4 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.usersTable {
+  overflow-x: auto;
+}
+
+.usersTable table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.usersTable th,
+.usersTable td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.usersTable th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+.usersTable tr:hover {
+  background-color: #f8f9fa;
+}

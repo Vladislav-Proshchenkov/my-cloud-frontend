@@ -3,16 +3,19 @@ import { useSelector } from 'react-redux';
 import { usersAPI } from '../services/auth';
 import styles from './Admin.module.css';
 import UserFiles from '../components/UserFiles/UserFiles';
+import Stats from '../components/Stats/Stats';
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [stats, setStats] = useState(null);
   const { user: currentUser } = useSelector(state => state.auth);
 
   useEffect(() => {
     if (currentUser?.is_admin) {
       loadUsers();
+      loadStats();
     }
   }, [currentUser]);
 
@@ -26,6 +29,15 @@ const Admin = () => {
       alert('Ошибка загрузки пользователей');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadStats = async () => {
+    try {
+      const response = await usersAPI.getStats();
+      setStats(response.data);
+    } catch (error) {
+      console.error('Ошибка загрузки статистики:', error);
     }
   };
 
@@ -78,16 +90,7 @@ const Admin = () => {
     <div className={styles.adminContainer}>
       <h1 className={styles.title}>Панель администратора</h1>
       
-      <div className={styles.stats}>
-        <div className={styles.statCard}>
-          <h3>Всего пользователей</h3>
-          <p>{users.length}</p>
-        </div>
-        <div className={styles.statCard}>
-          <h3>Администраторов</h3>
-          <p>{users.filter(u => u.is_admin).length}</p>
-        </div>
-      </div>
+      {stats && <Stats stats={stats} />}
 
       {loading ? (
         <div className={styles.loading}>Загрузка пользователей...</div>
@@ -125,7 +128,7 @@ const Admin = () => {
                         className={styles.toggleButton}
                         disabled={user.id === currentUser.id}
                       >
-                        {user.is_admin ? 'Снять права администратора' : 'Сделать администратором'}
+                        {user.is_admin ? 'Снять админа' : 'Сделать админом'}
                       </button>
                       <button
                         onClick={() => handleViewFiles(user)}
@@ -149,7 +152,6 @@ const Admin = () => {
         </div>
       )}
 
-      {}
       {selectedUser && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>

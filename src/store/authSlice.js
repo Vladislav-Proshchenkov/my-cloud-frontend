@@ -66,7 +66,13 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       localStorage.removeItem('authState');
-      authAPI.logout();
+      try {
+        authAPI.logout().catch(err => {
+          console.log('Server logout failed, but client state cleared');
+        });
+      } catch (error) {
+        console.log('AuthAPI not available during logout');
+      }
     },
     clearError: (state) => {
       state.error = null;
