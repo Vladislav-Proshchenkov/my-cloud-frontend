@@ -40,6 +40,14 @@ export const storageAPI = {
 
   updateFileInfo: (fileId, data) => 
     api.patch(`/storage/files/${fileId}/update_info/`, data),
+
+  getFileByUniqueId: (uniqueIdentifier) => 
+    api.get(`/storage/files/public/${uniqueIdentifier}/info/`),
+  
+  downloadFileByUniqueId: (uniqueIdentifier) => 
+    api.get(`/storage/files/public/${uniqueIdentifier}/download/`, { 
+      responseType: 'blob' 
+    }),
 };
 
 export const usersAPI = {
