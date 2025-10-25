@@ -92,16 +92,28 @@ const Storage = () => {
   };
 
   const handleGenerateLink = async (fileId) => {
-    try {
-      const response = await storageAPI.generateLink(fileId);
-      const publicUrl = `${window.location.origin}${response.data.public_url}`;
-      navigator.clipboard.writeText(publicUrl);
-      alert('Публичная ссылка скопирована в буфер обмена!');
-    } catch (error) {
-      console.error('Ошибка генерации ссылки:', error);
-      alert('Ошибка генерации ссылки');
+  try {
+    const response = await storageAPI.createShare(fileId);
+    
+    const publicUrl = `${window.location.origin}${response.data.public_url}`;
+    
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(publicUrl);
+    } else {
+      const textArea = document.createElement('textarea');
+      textArea.value = publicUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
     }
-  };
+    
+    alert('Публичная ссылка скопирована в буфер обмена!');
+  } catch (error) {
+    console.error('Ошибка генерации ссылки:', error);
+    alert('Ошибка генерации ссылки: ' + error.message);
+  }
+};
 
   const handleEdit = (file) => {
     setEditingFile(file);
@@ -109,7 +121,7 @@ const Storage = () => {
 
   const handleSaveEdit = async (updatedData) => {
     try {
-      await storageAPI.updateFileInfo(editingFile.id, updatedData);
+      await storageAPI.updateFile(editingFile.id, updatedData);
       await loadFiles();
       alert('Файл успешно обновлен!');
     } catch (error) {

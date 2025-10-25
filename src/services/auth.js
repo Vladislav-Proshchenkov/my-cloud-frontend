@@ -2,57 +2,63 @@ import api from './api';
 
 export const authAPI = {
   login: (username, password) => 
-    api.post('/users/login/', { username, password }),
+    api.post('/api/users/login/', { username, password }),
   
   register: (userData) => 
-    api.post('/users/register/', userData),
+    api.post('/api/users/register/', userData),
   
   logout: () => 
-    api.post('/users/logout/'),
+    api.post('/api/users/logout/'),
 };
 
 export const storageAPI = {
-  getFiles: () => 
-    api.get('/storage/files/'),
+  getFiles: () => api.get('/api/storage/files/'),
   
   uploadFile: (file, comment = '') => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('comment', comment);
-    return api.post('/storage/files/', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+    if (comment) {
+      formData.append('comment', comment);
+    }
+    return api.post('/api/storage/files/', formData, {
+      headers: { 
+        'Content-Type': 'multipart/form-data',
+      }
     });
   },
   
   deleteFile: (fileId) => 
-    api.delete(`/storage/files/${fileId}/`),
+    api.delete(`/api/storage/files/${fileId}/`),
   
   downloadFile: (fileId) => 
-    api.get(`/storage/files/${fileId}/download/`, { 
+    api.get(`/api/storage/files/${fileId}/download/`, { 
       responseType: 'blob' 
     }),
   
-  generateLink: (fileId) => 
-    api.post(`/storage/files/${fileId}/generate_link/`),
-
+  createShare: (fileId) => 
+    api.post(`/api/storage/files/${fileId}/share/`),
+  
+  deleteShare: (fileId) => 
+    api.delete(`/api/storage/files/${fileId}/share/`),
+  
   getUserFiles: (userId) => 
-    api.get(`/storage/files/?user_id=${userId}`),
-
-  updateFileInfo: (fileId, data) => 
-    api.patch(`/storage/files/${fileId}/update_info/`, data),
-
+    api.get(`/api/storage/files/?user_id=${userId}`),
+  
+  updateFile: (fileId, data) => api.patch(`/api/storage/files/${fileId}/`, data),
+  
   getFileByUniqueId: (uniqueIdentifier) => 
-    api.get(`/storage/files/public/${uniqueIdentifier}/info/`),
+    api.get(`/api/storage/files/public/${uniqueIdentifier}/info/`),
   
   downloadFileByUniqueId: (uniqueIdentifier) => 
-    api.get(`/storage/files/public/${uniqueIdentifier}/download/`, { 
+    api.get(`/api/storage/files/public/${uniqueIdentifier}/download/`, { 
       responseType: 'blob' 
     }),
 };
 
 export const usersAPI = {
-  getUsers: () => api.get('/users/'),
-  deleteUser: (userId) => api.delete(`/users/${userId}/`),
-  toggleAdmin: (userId) => api.post(`/users/${userId}/toggle-admin/`),
-  getStats: () => api.get('/users/stats/'),
+  getUsers: () => api.get('/api/users/'),
+  deleteUser: (userId) => api.delete(`/api/users/${userId}/`),
+  updateAdminStatus: (userId, isAdmin) => 
+    api.patch(`/api/users/${userId}/admin-status/`, { is_admin: isAdmin }),
+  getStats: () => api.get('/api/users/stats/'),
 };
