@@ -7,6 +7,8 @@ const UserFiles = ({ user, onClose }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingFile, setEditingFile] = useState(null);
+  const [previewFile, setPreviewFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   useEffect(() => {
     loadUserFiles();
@@ -15,8 +17,9 @@ const UserFiles = ({ user, onClose }) => {
   const loadUserFiles = async () => {
     setLoading(true);
     try {
-      const response = await storageAPI.getFiles(`?user_id=${user.id}`);
-      setFiles(response.data);
+      const response = await storageAPI.getFiles();
+      const userFiles = response.data.filter(file => file.user === user.id);
+      setFiles(userFiles);
     } catch (error) {
       console.error('Ошибка загрузки файлов:', error);
       alert('Ошибка загрузки файлов пользователя');
@@ -63,13 +66,33 @@ const UserFiles = ({ user, onClose }) => {
 
   const handleSaveEdit = async (updatedData) => {
     try {
-      await storageAPI.updateFileInfo(editingFile.id, updatedData);
+      await storageAPI.updateFile(editingFile.id, updatedData);
       await loadUserFiles();
       alert('Файл успешно обновлен!');
     } catch (error) {
       console.error('Ошибка обновления файла:', error);
       alert('Ошибка обновления файла');
       throw error;
+    }
+  };
+
+  const handlePreview = async (fileId) => {
+    try {
+      const response = await storageAPI.previewFile(fileId);
+      const url = URL.createObjectURL(response.data);
+      setPreviewUrl(url);
+      setPreviewFile(fileId);
+    } catch (error) {
+      console.error('Ошибка загрузки preview:', error);
+      alert('Не удалось загрузить preview файла');
+    }
+  };
+
+  const closePreview = () => {
+    setPreviewFile(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
     }
   };
 
@@ -120,6 +143,13 @@ const UserFiles = ({ user, onClose }) => {
               </div>
               <div className={styles.fileActions}>
                 <button
+                  onClick={() => handlePreview(file.id)}
+                  className={styles.previewButton}
+                >
+                  Просмотр
+                </button>  
+                
+                <button
                   onClick={() => handleDownload(file.id, file.original_name)}
                   className={styles.downloadButton}
                 >
@@ -149,6 +179,38 @@ const UserFiles = ({ user, onClose }) => {
           onSave={handleSaveEdit}
           onClose={() => setEditingFile(null)}
         />
+      )}
+
+      {previewFile && previewUrl && (
+        <div className={styles.previewModal}>
+          <div className={styles.previewModalContent}>
+            <div className={styles.previewModalHeader}>
+              <h3>Просмотр файла</h3>
+              <button onClick={closePreview} className={styles.closeButton}>×</button>
+            </div>
+            <div className={styles.previewModalBody}>
+              <iframe 
+                src={previewUrl} 
+                className={styles.previewIframe}
+                title="File Preview"
+              />
+              <div className={styles.previewActions}>
+                <button 
+                  onClick={() => handleDownload(previewFile)}
+                  className={styles.downloadButton}
+                >
+                  Скачать файл
+                </button>
+                <button 
+                  onClick={closePreview}
+                  className={styles.closeButton}
+                >
+                  Закрыть
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

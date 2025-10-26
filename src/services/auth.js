@@ -38,19 +38,27 @@ export const storageAPI = {
   createShare: (fileId) => 
     api.post(`/api/storage/files/${fileId}/share/`),
   
-  deleteShare: (fileId) => 
-    api.delete(`/api/storage/files/${fileId}/share/`),
-  
-  getUserFiles: (userId) => 
-    api.get(`/api/storage/files/?user_id=${userId}`),
-  
-  updateFile: (fileId, data) => api.patch(`/api/storage/files/${fileId}/`, data),
+  updateFile: (fileId, data) => 
+    api.patch(`/api/storage/files/${fileId}/`, data),
   
   getFileByUniqueId: (uniqueIdentifier) => 
     api.get(`/api/storage/files/public/${uniqueIdentifier}/info/`),
   
   downloadFileByUniqueId: (uniqueIdentifier) => 
     api.get(`/api/storage/files/public/${uniqueIdentifier}/download/`, { 
+      responseType: 'blob' 
+    }),
+
+  updateFileInfo: (fileId, data) => 
+    api.patch(`/api/storage/files/${fileId}/`, data),
+
+  previewFile: (fileId) => 
+    api.get(`/api/storage/files/${fileId}/preview/`, { 
+      responseType: 'blob' 
+    }),
+  
+  previewFileByUniqueId: (uniqueIdentifier) => 
+    api.get(`/api/storage/files/public/${uniqueIdentifier}/preview/`, { 
       responseType: 'blob' 
     }),
 };
@@ -61,4 +69,16 @@ export const usersAPI = {
   updateAdminStatus: (userId, isAdmin) => 
     api.patch(`/api/users/${userId}/admin-status/`, { is_admin: isAdmin }),
   getStats: () => api.get('/api/users/stats/'),
+
+  toggleAdmin: (userId, isAdmin) => 
+    api.patch(`/api/users/${userId}/admin-status/`, { is_admin: !isAdmin }),
+  
+  getAllFiles: () => api.get('/api/storage/files/admin/'),
+  getUserFiles: (userId) => api.get(`/api/storage/files/admin/?user_id=${userId}`),
+  updateUserFile: (fileId, data) => api.patch(`/api/storage/files/admin/${fileId}/`, data),
+  deleteUserFile: (fileId) => api.delete(`/api/storage/files/admin/${fileId}/`),
+  downloadUserFile: (fileId) => 
+    api.get(`/api/storage/files/admin/${fileId}/download/`, { 
+      responseType: 'blob' 
+    }),
 };

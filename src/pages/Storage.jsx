@@ -11,6 +11,8 @@ const Storage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [comment, setComment] = useState('');
   const [editingFile, setEditingFile] = useState(null);
+  const [previewFile, setPreviewFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const { user } = useSelector(state => state.auth);
 
   useEffect(() => {
@@ -92,28 +94,28 @@ const Storage = () => {
   };
 
   const handleGenerateLink = async (fileId) => {
-  try {
-    const response = await storageAPI.createShare(fileId);
-    
-    const publicUrl = `${window.location.origin}${response.data.public_url}`;
-    
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(publicUrl);
-    } else {
-      const textArea = document.createElement('textarea');
-      textArea.value = publicUrl;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
+    try {
+      const response = await storageAPI.createShare(fileId);
+      
+      const publicUrl = `${window.location.origin}${response.data.public_url}`;
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(publicUrl);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = publicUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+      
+      alert('Публичная ссылка скопирована в буфер обмена!');
+    } catch (error) {
+      console.error('Ошибка генерации ссылки:', error);
+      alert('Ошибка генерации ссылки: ' + error.message);
     }
-    
-    alert('Публичная ссылка скопирована в буфер обмена!');
-  } catch (error) {
-    console.error('Ошибка генерации ссылки:', error);
-    alert('Ошибка генерации ссылки: ' + error.message);
-  }
-};
+  };
 
   const handleEdit = (file) => {
     setEditingFile(file);
@@ -128,6 +130,26 @@ const Storage = () => {
       console.error('Ошибка обновления файла:', error);
       alert('Ошибка обновления файла');
       throw error;
+    }
+  };
+
+  const handlePreview = async (fileId) => {
+    try {
+      const response = await storageAPI.previewFile(fileId);
+      const url = URL.createObjectURL(response.data);
+      setPreviewUrl(url);
+      setPreviewFile(fileId);
+    } catch (error) {
+      console.error('Ошибка загрузки preview:', error);
+      alert('Не удалось загрузить preview файла');
+    }
+  };
+
+  const closePreview = () => {
+    setPreviewFile(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
     }
   };
 
@@ -204,6 +226,13 @@ const Storage = () => {
                   </div>
                 </div>
                 <div className={styles.fileActions}>
+                  <button 
+                    onClick={() => handlePreview(file.id)}
+                    className={styles.previewButton}
+                  >
+                    Просмотр
+                  </button>
+                  
                   <button
                     onClick={() => handleDownload(file.id, file.original_name)}
                     className={styles.downloadButton}
@@ -241,6 +270,38 @@ const Storage = () => {
           onSave={handleSaveEdit}
           onClose={() => setEditingFile(null)}
         />
+      )}
+
+      {previewFile && previewUrl && (
+        <div className={styles.previewModal}>
+          <div className={styles.previewModalContent}>
+            <div className={styles.previewModalHeader}>
+              <h3>Просмотр файла</h3>
+              <button onClick={closePreview} className={styles.closeButton}>×</button>
+            </div>
+            <div className={styles.previewModalBody}>
+              <iframe 
+                src={previewUrl} 
+                className={styles.previewIframe}
+                title="File Preview"
+              />
+              <div className={styles.previewActions}>
+                <button 
+                  onClick={() => handleDownload(previewFile)}
+                  className={styles.downloadButton}
+                >
+                  Скачать файл
+                </button>
+                <button 
+                  onClick={closePreview}
+                  className={styles.closeButton}
+                >
+                  Закрыть
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
