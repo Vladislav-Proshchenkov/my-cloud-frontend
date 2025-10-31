@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { storageAPI } from '../../services/auth';
+import { usersAPI, storageAPI } from '../../services/auth';
 import EditFileModal from '../EditFileModal/EditFileModal';
 import styles from './UserFiles.module.css';
 
@@ -9,28 +9,34 @@ const UserFiles = ({ user, onClose }) => {
   const [editingFile, setEditingFile] = useState(null);
   const [previewFile, setPreviewFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const isAdminView = true; 
 
   useEffect(() => {
+    console.log("UserFiles mounted for user:", user.id, user.username);
     loadUserFiles();
   }, [user]);
 
   const loadUserFiles = async () => {
     setLoading(true);
     try {
-      const response = await storageAPI.getFiles();
-      const userFiles = response.data.filter(file => file.user === user.id);
-      setFiles(userFiles);
+        console.log("=== DEBUG UserFiles loadUserFiles ===");
+        console.log("User prop:", user);
+        
+        const response = await usersAPI.getUserFiles(user.id);
+        console.log("API Response data:", response.data);
+        
+        setFiles(response.data);
     } catch (error) {
-      console.error('Ошибка загрузки файлов:', error);
-      alert('Ошибка загрузки файлов пользователя');
+        console.error('Ошибка загрузки файлов:', error);
+        alert('Ошибка загрузки файлов пользователя');
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
 
   const handleDownload = async (fileId, fileName) => {
     try {
-      const response = await storageAPI.downloadFile(fileId);
+      const response = await usersAPI.adminDownloadFile(fileId);
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -51,7 +57,7 @@ const UserFiles = ({ user, onClose }) => {
     }
 
     try {
-      await storageAPI.deleteFile(fileId);
+      await usersAPI.adminDeleteFile(fileId);
       await loadUserFiles();
       alert('Файл удален');
     } catch (error) {
@@ -66,7 +72,7 @@ const UserFiles = ({ user, onClose }) => {
 
   const handleSaveEdit = async (updatedData) => {
     try {
-      await storageAPI.updateFile(editingFile.id, updatedData);
+      await usersAPI.adminUpdateFile(editingFile.id, updatedData);
       await loadUserFiles();
       alert('Файл успешно обновлен!');
     } catch (error) {
@@ -78,7 +84,7 @@ const UserFiles = ({ user, onClose }) => {
 
   const handlePreview = async (fileId) => {
     try {
-      const response = await storageAPI.previewFile(fileId);
+      const response = await usersAPI.adminPreviewFile(fileId);
       const url = URL.createObjectURL(response.data);
       setPreviewUrl(url);
       setPreviewFile(fileId);

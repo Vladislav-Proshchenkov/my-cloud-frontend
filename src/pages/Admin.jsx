@@ -22,13 +22,18 @@ const Admin = () => {
   const loadUsers = async () => {
     setLoading(true);
     try {
-      const response = await usersAPI.getUsers();
-      setUsers(response.data);
+        const response = await usersAPI.getUsers();
+        console.log("=== DEBUG loadUsers ===");
+        console.log("All users data:", response.data);
+        response.data.forEach(user => {
+            console.log(`User: ${user.username}, ID: ${user.id}, is_admin: ${user.is_admin}`);
+        });
+        setUsers(response.data);
     } catch (error) {
-      console.error('Ошибка загрузки пользователей:', error);
-      alert('Ошибка загрузки пользователей');
+        console.error('Ошибка загрузки пользователей:', error);
+        alert('Ошибка загрузки пользователей');
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
 
@@ -68,8 +73,12 @@ const Admin = () => {
   };
 
   const handleViewFiles = (user) => {
+    console.log("=== DEBUG handleViewFiles ===");
+    console.log("User object:", user);
+    console.log("User ID:", user.id);
+    console.log("Username:", user.username);
     setSelectedUser(user);
-  };
+};
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('ru-RU');
@@ -109,45 +118,51 @@ const Admin = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map(user => (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
-                  <td>{user.username}</td>
-                  <td>{user.first_name || '-'} {user.last_name || '-'}</td>
-                  <td>{user.email}</td>
-                  <td>{formatDate(user.date_joined)}</td>
-                  <td>
-                    <span className={user.is_admin ? styles.adminBadge : styles.userBadge}>
-                      {user.is_admin ? 'Да' : 'Нет'}
-                    </span>
-                  </td>
-                  <td>
-                    <div className={styles.actions}>
-                      <button
-                        onClick={() => handleToggleAdmin(user.id, user.is_admin)}
-                        className={styles.toggleButton}
-                        disabled={user.id === currentUser.id}
-                      >
-                        {user.is_admin ? 'Снять админа' : 'Сделать админом'}
-                      </button>
-                      <button
-                        onClick={() => handleViewFiles(user)}
-                        className={styles.filesButton}
-                      >
-                        Файлы
-                      </button>
-                      <button
-                        onClick={() => handleDeleteUser(user.id, user.username)}
-                        className={styles.deleteButton}
-                        disabled={user.id === currentUser.id}
-                      >
-                        Удалить
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+  {users.map(user => (
+    <tr key={user.id}>
+      <td>{user.id}</td>
+      <td>{user.username}</td>
+      <td>{user.first_name || '-'} {user.last_name || '-'}</td>
+      <td>{user.email}</td>
+      <td>{formatDate(user.date_joined)}</td>
+      <td>
+        <span className={user.is_admin ? styles.adminBadge : styles.userBadge}>
+          {user.is_admin ? 'Да' : 'Нет'}
+        </span>
+      </td>
+      <td>
+        <div className={styles.actions}>
+          <button
+            onClick={() => {
+              console.log("Toggle admin for user:", user.id, user.username);
+              handleToggleAdmin(user.id, user.is_admin);
+            }}
+            className={styles.toggleButton}
+            disabled={user.id === currentUser.id}
+          >
+            {user.is_admin ? 'Снять админа' : 'Сделать админом'}
+          </button>
+          <button
+            onClick={() => {
+              console.log("View files for user:", user.id, user.username);
+              handleViewFiles(user);
+            }}
+            className={styles.filesButton}
+          >
+            Файлы
+          </button>
+          <button
+            onClick={() => handleDeleteUser(user.id, user.username)}
+            className={styles.deleteButton}
+            disabled={user.id === currentUser.id}
+          >
+            Удалить
+          </button>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
           </table>
         </div>
       )}

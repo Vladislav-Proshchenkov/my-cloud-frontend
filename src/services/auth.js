@@ -67,18 +67,27 @@ export const usersAPI = {
   getUsers: () => api.get('/api/users/'),
   deleteUser: (userId) => api.delete(`/api/users/${userId}/`),
   updateAdminStatus: (userId, isAdmin) => 
-    api.patch(`/api/users/${userId}/admin-status/`, { is_admin: isAdmin }),
-  getStats: () => api.get('/api/users/stats/'),
-
-  toggleAdmin: (userId, isAdmin) => 
-    api.patch(`/api/users/${userId}/admin-status/`, { is_admin: !isAdmin }),
+    api.patch(`/api/users/${userId}/admin_status/`, { is_admin: isAdmin }),
+  getStats: () => api.get('/api/stats/'),
+  getUserFiles: (userId) => api.get(`/api/storage/admin/users/${userId}/files/`),
+  toggleAdmin: (userId) => 
+    api.patch(`/api/users/${userId}/admin_status/`),
   
-  getAllFiles: () => api.get('/api/storage/files/admin/'),
-  getUserFiles: (userId) => api.get(`/api/storage/files/admin/?user_id=${userId}`),
-  updateUserFile: (fileId, data) => api.patch(`/api/storage/files/admin/${fileId}/`, data),
-  deleteUserFile: (fileId) => api.delete(`/api/storage/files/admin/${fileId}/`),
-  downloadUserFile: (fileId) => 
-    api.get(`/api/storage/files/admin/${fileId}/download/`, { 
+  getAllFiles: () => api.get('/api/storage/admin/files/'),
+  getUserFiles: (userId) => api.get(`/api/storage/admin/files/?user_id=${userId}`),
+  getAllFiles: () => api.get('/api/storage/admin/files/'),
+  getUserFiles: (userId) => api.get(`/api/storage/admin/files/?user_id=${userId}`),
+  
+  adminDownloadFile: (fileId) => 
+    api.get(`/api/storage/files/${fileId}/download/`, { 
       responseType: 'blob' 
     }),
+  adminPreviewFile: (fileId) => 
+    api.get(`/api/storage/files/${fileId}/preview/`, { 
+      responseType: 'blob' 
+    }),
+  adminUpdateFile: (fileId, data) => 
+    api.patch(`/api/storage/files/${fileId}/`, data),
+  adminDeleteFile: (fileId) => 
+    api.delete(`/api/storage/files/${fileId}/`),
 };
